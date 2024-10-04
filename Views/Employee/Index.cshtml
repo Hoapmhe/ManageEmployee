@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Employee>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Category List</h2>
+        </div>
+        <div class="col-6  text-end p-0">
+            <a asp-controller="Employee" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create new employee</a>
+        </div>
+    </div>
+
+</div>
+<div>
+    <div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="w-50">Category name</th>
+                    <th class="w-50">Display order</th>
+                    <th class="w-20">Edit</th>
+                    <th class="w-20">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.FullName</td>
+                        <td>@item.DOB</td>
+                        <td>@item.Age</td>
+                        <td>@item.Ethnicity</td>
+                        <td>@item.Job</td>
+                        <td>@item.CitizenId</td>
+                        <td>@item.PhoneNumber</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
