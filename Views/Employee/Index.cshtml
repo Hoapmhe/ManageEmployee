@@ -16,8 +16,14 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th class="w-50">Category name</th>
-                    <th class="w-50">Display order</th>
+                    <th>Employee ID</th>
+                    <th>Full Name</th>
+                    <th>Date of Birth</th>
+                    <th>Age</th>
+                    <th>Ethnicity</th>
+                    <th>Job</th>
+                    <th>Citizen ID</th>
+                    <th>Phone Number</th>
                     <th class="w-20">Edit</th>
                     <th class="w-20">Delete</th>
                 </tr>
@@ -28,12 +34,22 @@
                     <tr>
                         <td>@item.Id</td>
                         <td>@item.FullName</td>
-                        <td>@item.DOB</td>
+                        <td>@item.DOB.ToString("dd-MM-yyyy")</td>
                         <td>@item.Age</td>
                         <td>@item.Ethnicity</td>
                         <td>@item.Job</td>
                         <td>@item.CitizenId</td>
                         <td>@item.PhoneNumber</td>
+                        <td>
+                            <a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-controller="Employee" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
                     </tr>
                 }
             </tbody>
