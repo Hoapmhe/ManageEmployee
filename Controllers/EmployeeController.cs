@@ -74,5 +74,21 @@ namespace ManageEmployee.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var employee = _employeeService.GetEmployeeById(id);
+            if (employee == null)
+            {
+                TempData["Error"] = "Employee not found";
+                return NotFound();
+            }
+            else
+            {
+                _employeeService.DeleteEmployee(employee);
+                TempData["Success"] = "Delete employee successfully";
+                return Ok();
+            }
+        }
     }
 }

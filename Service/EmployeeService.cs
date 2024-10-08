@@ -43,5 +43,11 @@ namespace ManageEmployee.Service
         {
             return _context.Employees.Any(e => e.CitizenId == citizenId);
         }
+
+        public void DeleteEmployee(Employee employee)
+        {
+            _context.Employees.Remove(employee);
+            _context.SaveChanges();
+        }
     }
 }
