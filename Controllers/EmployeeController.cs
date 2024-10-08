@@ -1,20 +1,21 @@
-﻿using ManageEmployee.Data;
-using ManageEmployee.Models;
+﻿using ManageEmployee.Models;
+using ManageEmployee.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManageEmployee.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly AppDbContext _context;
-        public EmployeeController(AppDbContext context)
+        private readonly EmployeeService _employeeService;
+
+        public EmployeeController(EmployeeService employeeService)
         {
-            _context = context;
+            _employeeService = employeeService;
         }
 
         public IActionResult Index()
         {
-            var listEmployee = _context.Employees.ToList();
+            var listEmployee = _employeeService.GetEmployees();
             return View(listEmployee);
         }
 
@@ -22,23 +23,23 @@ namespace ManageEmployee.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Employee obj)
         {
-            bool citizenIdExists = _context.Employees.Any(e => e.CitizenId == obj.CitizenId);
-            if (citizenIdExists)
+            if (_employeeService.IsCitizenIdExited(obj.CitizenId))
             {
                 ModelState.AddModelError("EmployeeError", $"Citizen id '{obj.CitizenId}' has existed");
             }
             if (ModelState.IsValid)
             {
-                _context.Employees.Add(obj);
-                _context.SaveChanges();
-                TempData["Sucess"] = "Create employee sucessesfull";
+                _employeeService.AddEmployee(obj);
+                TempData["Success"] = "Create employee successfully";
                 return RedirectToAction("Index");
             }
             return View();
         }
+
     }
 }
