@@ -41,5 +41,38 @@ namespace ManageEmployee.Controllers
             return View();
         }
 
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var employee = _employeeService.GetEmployeeById(id.Value);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            ViewBag.EmployeeName = employee.FullName;
+            return View(employee);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Employee obj)
+        {
+            var empCitizenId = _employeeService.GetEmployeeById(obj.Id).CitizenId;
+            if (!obj.CitizenId.Equals(empCitizenId) && _employeeService.IsCitizenIdExited(obj.CitizenId))
+            {
+                ModelState.AddModelError("EmployeeError", $"Citizen id '{obj.CitizenId}' has existed");
+            }
+            if (ModelState.IsValid)
+            {
+                _employeeService.UpdateEmployee(obj);
+                TempData["Success"] = "Update employee successfully";
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
     }
 }

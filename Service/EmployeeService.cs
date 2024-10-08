@@ -1,5 +1,6 @@
 ﻿using ManageEmployee.Data;
 using ManageEmployee.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,9 +20,11 @@ namespace ManageEmployee.Service
             return _context.Employees.ToList();
         }
 
+        //Using AsNoTracking() for retrievals or detaching the existing tracked entity
+        //should resolve the issue of tracking multiple instances of the same entity with the same key value.
         public Employee GetEmployeeById(int id)
         {
-            return _context.Employees.FirstOrDefault(e => e.Id == id);
+            return _context.Employees.AsNoTracking().FirstOrDefault(e => e.Id == id);
         }
 
         public void AddEmployee(Employee employee)
