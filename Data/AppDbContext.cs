@@ -11,5 +11,8 @@ namespace ManageEmployee.Data
         }
 
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Commune> Communes { get; set; }
     }
 }
