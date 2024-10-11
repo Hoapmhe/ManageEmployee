@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Province>
+
+<div class="d-flex justify-content-center gap-lg-4">
+    <div class="">
+        <a asp-controller="Province" asp-action="Index" class="btn btn-outline-primary">Province</a>
+    </div>
+    <div class="">
+        <a asp-controller="District" asp-action="Index" class="btn btn-outline-primary">District</a>
+    </div>
+    <div class="">
+        <a asp-controller="Commune" asp-action="Index" class="btn btn-outline-primary">Commune</a>
+    </div>
+</div>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Employee List</h2>
+        </div>
+        <div class="col-6  text-end p-0">
+            <a asp-controller="Province" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create new province</a>
+        </div>
+    </div>
+
+</div>
+<div>
+    <div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Province Id</th>
+                    <th>Province Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ProvinceId</td>
+                        <td>@item.ProvinceName</td>
+                        
+                        <td>
+                            <a asp-controller="Province" asp-action="Edit" asp-route-id="@item.ProvinceId" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a onclick="deleteProvince('@item.ProvinceId')" class="btn btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
