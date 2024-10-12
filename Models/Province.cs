@@ -12,7 +12,7 @@ namespace ManageEmployee.Models
         [StringLength(255)]
         [Column(TypeName = "nvarchar")]
         public string ProvinceName { get; set; }
-        public ICollection<District> Districts { get; set; }
+        public ICollection<District>? Districts { get; set; }
 
     }
 }
