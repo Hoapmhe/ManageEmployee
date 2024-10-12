@@ -36,7 +36,37 @@ namespace ManageEmployee.Controllers
                 return RedirectToAction("Index");
             }
             return View();
-        } 
+        }
 
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var province = _provinceService.GetProvinceById(id.Value);
+            if (province == null)
+            {
+                return NotFound();
+            }
+            return View(province);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Province obj)
+        {
+            if (_provinceService.IsProvinceExisted(obj.ProvinceName))
+            {
+                ModelState.AddModelError("ProvinceError", $"Province '{obj.ProvinceName}' has existed");
+            }
+            if (ModelState.IsValid)
+            {
+                _provinceService.UpdateProvince(obj);
+                TempData["Success"] = "Update province successfully";
+                return RedirectToAction("Index");
+            }
+
+            return View();
+        }
     }
 }

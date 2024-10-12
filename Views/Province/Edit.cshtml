@@ -1,0 +1,25 @@
+﻿@model Province
+
+<form method="post" asp-action="Edit">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2 mb-3">
+            <h2>Add New Province</h2>
+        </div>
+        <div asp-validation-summary=All></div>
+        
+        <div class="mb-4">
+            <input type="hidden" asp-for="ProvinceId" />
+            <label asp-for="ProvinceName">Province Name</label>
+            <input asp-for="ProvinceName" class="form-control" />
+            <span asp-validation-for="ProvinceName" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-controller="Province" asp-action="Index" class="btn btn-secondary">Back to list</a>
+    </div>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

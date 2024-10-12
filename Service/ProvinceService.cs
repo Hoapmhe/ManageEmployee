@@ -28,7 +28,7 @@ namespace ManageEmployee.Service
         }
         public void UpdateProvince(Province province)
         {
-            _context.Update(province);
+            _context.Provinces.Update(province);
             _context.SaveChanges();
         }
         public void RemoveProvince(Province province)
@@ -37,5 +37,9 @@ namespace ManageEmployee.Service
             _context.SaveChanges();
         }
 
+        public Province GetProvinceById(int id)
+        {
+            return _context.Provinces.AsNoTracking().FirstOrDefault(e => e.ProvinceId == id);
+        }
     }
 }
