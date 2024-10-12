@@ -18,7 +18,8 @@ namespace ManageEmployee.Service
 
         public bool IsProvinceExisted(string provinceName)
         {
-            return _context.Provinces.Any(p =>  p.ProvinceName.Equals(provinceName, StringComparison.OrdinalIgnoreCase));
+            return _context.Provinces
+                   .Any(p => p.ProvinceName.ToLower() == provinceName.ToLower());
         }
         public void AddProvince(Province province)
         {
