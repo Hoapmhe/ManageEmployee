@@ -68,5 +68,28 @@ namespace ManageEmployee.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Delete(int provinceId)
+        {
+            var employee = _provinceService.GetProvinceById(provinceId);
+            if (employee == null)
+            {
+                TempData["Error"] = "Province not found";
+                return NotFound();
+            }
+            //nếu mà Province có chứa District thì không xóa được
+            else if (_provinceService.IsProvinceContainDistrict(provinceId)) 
+            {
+                TempData["Error"] = "Cannot delete this province because it contains District";
+                return Ok();
+            }
+            else
+            {
+                _provinceService.RemoveProvince(employee);
+                TempData["Success"] = "Delete employee successfully";
+                return Ok();
+            }
+        }
     }
 }
