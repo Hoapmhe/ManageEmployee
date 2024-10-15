@@ -41,6 +41,14 @@ namespace ManageEmployee.Controllers
                 return View();  // Return the view with validation message
             }
 
+            if (_districtService.IsDistrictExistedInProvince(district.DistrictName, district.ProvinceId))
+            {
+                var province = provinceList.FirstOrDefault(p => p.ProvinceId == district.ProvinceId);
+                string provinceName = province != null ? province.ProvinceName : "Unknown  province";
+                TempData["Error"] = $"District '{district.DistrictName}' has existed in {provinceName}";
+                return View();
+            }
+
             _districtService.AddDistrict(district);
             TempData["Success"] = "Create distric successfully";
             return RedirectToAction("Index");

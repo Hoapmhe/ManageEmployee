@@ -15,9 +15,10 @@ namespace ManageEmployee.Service
         {
             return await _context.Districts.Include(d => d.Province).ToListAsync();
         }
-        public bool IsDistrictExisted(string districtName)
+        public bool IsDistrictExistedInProvince(string districtName, int provinceId)
         {
-            return _context.Districts.Any(d => d.DistrictName.Equals(districtName, StringComparison.OrdinalIgnoreCase));
+            return _context.Provinces.Any(p => p.ProvinceId == provinceId) 
+                && _context.Districts.Any(d => d.DistrictName.ToLower() == districtName.ToLower());
         }
         public void AddDistrict(District district)
         {
