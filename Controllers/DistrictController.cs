@@ -53,5 +53,43 @@ namespace ManageEmployee.Controllers
             TempData["Success"] = "Create distric successfully";
             return RedirectToAction("Index");
         }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var district = _districtService.GetDistrictById(id.Value);
+            if (district == null)
+            {
+                return NotFound();
+            }
+
+            // Get the list of provinces and pre-select the current province
+            var provinceList = _provinceService.GetProvinces().Result;
+            ViewBag.Provinces = new SelectList(provinceList, "ProvinceId", "ProvinceName", district.ProvinceId);
+
+            return View(district);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Edit(District district)
+        {
+            var provinceList =  await _provinceService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinceList, "ProvinceId", "ProvinceName");
+
+            if (_districtService.IsDistrictExistedInProvince(district.DistrictName, district.ProvinceId))
+            {
+                var province = provinceList.FirstOrDefault(p => p.ProvinceId == district.ProvinceId);
+                string provinceName = province != null ? province.ProvinceName : "Unknown  province";
+                TempData["Error"] = $"District '{district.DistrictName}' has existed in {provinceName}";
+                return View();
+            }
+            _districtService.UpdateDistrict(district);
+            TempData["Success"] = "Update district successfull";
+            return RedirectToAction("Index");
+        }
     }
 }

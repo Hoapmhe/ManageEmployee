@@ -17,8 +17,9 @@ namespace ManageEmployee.Service
         }
         public bool IsDistrictExistedInProvince(string districtName, int provinceId)
         {
-            return _context.Provinces.Any(p => p.ProvinceId == provinceId) 
-                && _context.Districts.Any(d => d.DistrictName.ToLower() == districtName.ToLower());
+            bool rs = _context.Districts
+                    .Any(d => d.ProvinceId == provinceId && d.DistrictName.ToLower().Trim() == districtName.ToLower().Trim());
+            return rs;
         }
         public void AddDistrict(District district)
         {
@@ -34,6 +35,11 @@ namespace ManageEmployee.Service
         {
             _context.Districts.Remove(district);
             _context.SaveChanges();
+        }
+
+        public District GetDistrictById(int id)
+        {
+            return _context.Districts.AsNoTracking().FirstOrDefault(d => d.DistrictId == id);
         }
     }
 }
