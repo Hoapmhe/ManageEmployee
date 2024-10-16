@@ -7,9 +7,11 @@ namespace ManageEmployee.Controllers
     public class ProvinceController : Controller
     {
         private readonly ProvinceService _provinceService;
-        public ProvinceController(ProvinceService provinceService)
+        private readonly DistrictService _districtService;
+        public ProvinceController(ProvinceService provinceService, DistrictService districtService)
         {
             _provinceService = provinceService;
+            _districtService = districtService;
         }
         public async Task<IActionResult> Index()
         {
@@ -73,23 +75,27 @@ namespace ManageEmployee.Controllers
         public IActionResult Delete(int provinceId)
         {
             var province = _provinceService.GetProvinceById(provinceId);
+
             if (province == null)
             {
                 TempData["Error"] = "Province not found";
                 return NotFound();
             }
-            //nếu mà Province có chứa District thì không xóa được
-            else if (_provinceService.IsProvinceContainDistrict(provinceId)) 
+
+            // Fetch the districts that belong to the province
+            var districts = _districtService.GetListDistrictsByProvinceId(provinceId);
+
+            // Delete all the districts associated with this province
+            foreach (var district in districts)
             {
-                TempData["Error"] = "Cannot delete this province because it contains District";
-                return Ok();
+                _districtService.RemoveDistrict(district);
             }
-            else
-            {
-                _provinceService.RemoveProvince(province);
-                TempData["Success"] = "Delete employee successfully";
-                return Ok();
-            }
+
+            _provinceService.RemoveProvince(province);
+
+            TempData["Success"] = "Deleted province and its districts successfully";
+            return Ok();
         }
+
     }
 }

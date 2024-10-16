@@ -40,5 +40,10 @@ namespace ManageEmployee.Service
         {
             return _context.Districts.AsNoTracking().FirstOrDefault(d => d.DistrictId == id);
         }
+
+        public IEnumerable<District> GetListDistrictsByProvinceId(int provinceId)
+        {
+            return _context.Districts.Where(d => d.ProvinceId == provinceId).ToList();
+        }
     }
 }

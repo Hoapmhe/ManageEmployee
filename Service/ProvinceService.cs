@@ -42,9 +42,5 @@ namespace ManageEmployee.Service
             return _context.Provinces.AsNoTracking().FirstOrDefault(e => e.ProvinceId == id);
         }
 
-        public bool IsProvinceContainDistrict(int provinceId)
-        {
-            return _context.Districts.Any(d => d.ProvinceId == provinceId);
-        }
     }
 }
