@@ -91,5 +91,22 @@ namespace ManageEmployee.Controllers
             TempData["Success"] = "Update district successfull";
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public IActionResult Delete(int districtId)
+        {
+            var district = _districtService.GetDistrictById(districtId);
+            if (district == null)
+            {
+                TempData["Error"] = "District not found";
+                return NotFound();
+            }
+            else
+            {
+                _districtService.RemoveDistrict(district);
+                TempData["Success"] = "Delete district successfully";
+                return Ok();
+            }
+        }
     }
 }
