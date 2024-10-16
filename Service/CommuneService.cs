@@ -33,5 +33,10 @@ namespace ManageEmployee.Service
             _context.Communes.Remove(commune);
             _context.SaveChanges();
         }
+
+        public IEnumerable<Commune> GetListCommunesByDistrictId(int communeId)
+        {
+            return _context.Communes.Where(d => d.CommuneId == communeId).ToList();
+        }
     }
 }

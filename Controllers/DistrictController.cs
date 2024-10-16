@@ -9,10 +9,14 @@ namespace ManageEmployee.Controllers
     {
         private readonly DistrictService _districtService;
         private readonly ProvinceService _provinceService;
-        public DistrictController(DistrictService districtService, ProvinceService provinceService)
+        private readonly CommuneService _communeService;
+        public DistrictController(DistrictService districtService, 
+                                  ProvinceService provinceService,
+                                  CommuneService communeService)
         {
             _districtService = districtService;
             _provinceService = provinceService;
+            _communeService = communeService;
         }
         public async Task<IActionResult> Index()
         {
@@ -101,12 +105,16 @@ namespace ManageEmployee.Controllers
                 TempData["Error"] = "District not found";
                 return NotFound();
             }
-            else
+
+            var communes = _communeService.GetListCommunesByDistrictId(districtId);
+            foreach (var commune in communes)
             {
-                _districtService.RemoveDistrict(district);
-                TempData["Success"] = "Delete district successfully";
-                return Ok();
+                _communeService.RemoveCommune(commune);
             }
+
+            _districtService.RemoveDistrict(district);
+            TempData["Success"] = "Delete district successfully";
+            return Ok();
         }
     }
 }
