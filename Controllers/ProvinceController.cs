@@ -72,8 +72,8 @@ namespace ManageEmployee.Controllers
         [HttpPost]
         public IActionResult Delete(int provinceId)
         {
-            var employee = _provinceService.GetProvinceById(provinceId);
-            if (employee == null)
+            var province = _provinceService.GetProvinceById(provinceId);
+            if (province == null)
             {
                 TempData["Error"] = "Province not found";
                 return NotFound();
@@ -86,7 +86,7 @@ namespace ManageEmployee.Controllers
             }
             else
             {
-                _provinceService.RemoveProvince(employee);
+                _provinceService.RemoveProvince(province);
                 TempData["Success"] = "Delete employee successfully";
                 return Ok();
             }
