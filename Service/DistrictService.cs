@@ -17,9 +17,8 @@ namespace ManageEmployee.Service
         }
         public bool IsDistrictExistedInProvince(string districtName, int provinceId)
         {
-            bool rs = _context.Districts
+            return _context.Districts
                     .Any(d => d.ProvinceId == provinceId && d.DistrictName.ToLower().Trim() == districtName.ToLower().Trim());
-            return rs;
         }
         public void AddDistrict(District district)
         {

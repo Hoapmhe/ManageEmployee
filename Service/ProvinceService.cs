@@ -19,7 +19,7 @@ namespace ManageEmployee.Service
         public bool IsProvinceExisted(string provinceName)
         {
             return _context.Provinces
-                   .Any(p => p.ProvinceName.ToLower() == provinceName.ToLower());
+                   .Any(p => p.ProvinceName.ToLower().Trim() == provinceName.ToLower().Trim());
         }
         public void AddProvince(Province province)
         {
