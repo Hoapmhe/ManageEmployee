@@ -43,7 +43,7 @@
                         <td>@item.CommuneId</td>
                         <td>@item.CommuneName</td>
                         <td>@item.District?.DistrictName</td>
-                        <th>@item.District?.Province?.ProvinceName</th>
+                        <td>@item.District?.Province?.ProvinceName</td>
 
                         <td>
                             <a asp-controller="Commune" asp-action="Edit" asp-route-id="@item.CommuneId" class="btn btn-primary">
