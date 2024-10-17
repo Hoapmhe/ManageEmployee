@@ -1,5 +1,6 @@
 ﻿using ManageEmployee.Data;
 using ManageEmployee.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManageEmployee.Service
 {
@@ -10,9 +11,11 @@ namespace ManageEmployee.Service
         {
             _context = context;
         }
-        public List<Commune> GetCommunes()
+        public async Task<List<Commune>> GetCommunes()
         {
-            return _context.Communes.ToList();
+            return await _context.Communes.Include(c => c.District)
+                                          .ThenInclude(d => d.Province) //lấy Province thông qua District
+                                          .ToListAsync();
         }
         public bool IsCommuneExisted(string communeName)
         {

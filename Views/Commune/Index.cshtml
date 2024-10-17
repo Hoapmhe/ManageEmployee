@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Commune>
+
+<div class="d-flex justify-content-center gap-lg-4">
+    <div class="">
+        <a asp-controller="Province" asp-action="Index" class="btn btn-outline-primary">Province</a>
+    </div>
+    <div class="">
+        <a asp-controller="District" asp-action="Index" class="btn btn-outline-primary">District</a>
+    </div>
+    <div class="">
+        <a asp-controller="Commune" asp-action="Index" class="btn btn-outline-primary">Commune</a>
+    </div>
+</div>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Commune List</h2>
+        </div>
+        <div class="col-6  text-end p-0">
+            <a asp-controller="Commune" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create new commune</a>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Commune Id</th>
+                    <th>Commune Name</th>
+                    <th>District</th>
+                    <th>Province</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CommuneId</td>
+                        <td>@item.CommuneName</td>
+                        <td>@item.District?.DistrictName</td>
+                        <th>@item.District?.Province?.ProvinceName</th>
+
+                        <td>
+                            <a asp-controller="Commune" asp-action="Edit" asp-route-id="@item.CommuneId" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a onclick="deleteCommune('@item.CommuneId')" class="btn btn-danger">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/js/addresscontroller.js"></script>
+}
