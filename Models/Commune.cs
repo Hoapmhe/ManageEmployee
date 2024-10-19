@@ -13,6 +13,7 @@ namespace ManageEmployee.Models
         [Column(TypeName = "nvarchar")]
         public string CommuneName { get; set; }
         // Foreign key to District
+        [Required]
         public int DistrictId { get; set; }
         public District District { get; set; }
     }
