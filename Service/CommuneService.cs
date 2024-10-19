@@ -17,9 +17,10 @@ namespace ManageEmployee.Service
                                           .ThenInclude(d => d.Province) //lấy Province thông qua District
                                           .ToListAsync();
         }
-        public bool IsCommuneExisted(string communeName)
+        public bool IsCommuneExistedInDistrict(string communeName, int districtId)
         {
-            return _context.Communes.Any(d => d.CommuneName.Equals(communeName, StringComparison.OrdinalIgnoreCase));
+            return _context.Communes.Any(c => c.DistrictId == districtId 
+                    && c.CommuneName.ToLower().Trim() == communeName.ToLower().Trim());
         }
         public void AddCommune(Commune commune)
         {
