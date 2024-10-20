@@ -42,5 +42,10 @@ namespace ManageEmployee.Service
         {
             return _context.Communes.Where(d => d.CommuneId == communeId).ToList();
         }
+
+        public Commune GetCommuneById(int communeId)
+        {
+            return _context.Communes.AsNoTracking().FirstOrDefault(c => c.CommuneId == communeId);
+        }
     }
 }

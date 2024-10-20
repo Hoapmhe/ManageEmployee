@@ -1,0 +1,37 @@
+﻿@model Commune
+
+<form method="post" asp-action="Edit">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2 mb-3">
+            <h2>Update Commune</h2>
+        </div>
+
+        <div class="row mb-3">
+            <input type="hidden" asp-for="CommuneId" />
+            <div class="col-md-5">
+                <label asp-for="CommuneName">Commune Name</label>
+                <input asp-for="CommuneName" class="form-control" />
+                <span asp-validation-for="CommuneName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-7">
+                <label asp-for="DistrictId" class="form-label">District Name</label>
+                <select asp-for="DistrictId" asp-items="@ViewBag.Communes" class="form-control p-2">
+                </select>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="text-danger">@ViewBag.Error</div>
+                }
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-controller="Commune" asp-action="Index" class="btn btn-secondary">Back to list</a>
+    </div>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
