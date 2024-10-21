@@ -81,10 +81,14 @@ namespace ManageEmployee.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Edit(District district)
         {
+            //gửi lại danh sách chọn Province, nếu update lỗi
             var provinceList =  await _provinceService.GetProvinces();
             ViewBag.Provinces = new SelectList(provinceList, "ProvinceId", "ProvinceName");
 
-            if (_districtService.IsDistrictExistedInProvince(district.DistrictName, district.ProvinceId))
+            var selectedDistrict = _districtService.GetDistrictById(district.DistrictId);
+            //bỏ qua tên kiểm tra trùng lặp nếu sử dung lại tên District cũ
+            if (!district.DistrictName.Equals(selectedDistrict.DistrictName, StringComparison.OrdinalIgnoreCase) 
+                    && _districtService.IsDistrictExistedInProvince(district.DistrictName, district.ProvinceId))
             {
                 var province = provinceList.FirstOrDefault(p => p.ProvinceId == district.ProvinceId);
                 string provinceName = province != null ? province.ProvinceName : "Unknown  province";
