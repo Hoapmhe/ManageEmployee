@@ -57,7 +57,8 @@ namespace ManageEmployee.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Province obj)
         {
-            if (_provinceService.IsProvinceExisted(obj.ProvinceName))
+            var province = _provinceService.GetProvinceById(obj.ProvinceId);
+            if (!obj.ProvinceName.Equals(province.ProvinceName, StringComparison.OrdinalIgnoreCase) && _provinceService.IsProvinceExisted(obj.ProvinceName))
             {
                 ModelState.AddModelError("ProvinceError", $"Province '{obj.ProvinceName}' has existed");
             }
