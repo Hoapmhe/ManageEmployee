@@ -7,17 +7,17 @@ namespace ManageEmployee.Controllers
 {
     public class CommuneController : Controller
     {
-        private readonly CommuneService _comuneService;
+        private readonly CommuneService _communeService;
         private readonly DistrictService _districtService;
 
         public CommuneController(CommuneService comuneService, DistrictService districtService)
         {
-            _comuneService = comuneService;
+            _communeService = comuneService;
             _districtService = districtService;
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _comuneService.GetCommunes());
+            return View(await _communeService.GetCommunes());
         }
 
         public async Task<IActionResult> Create()
@@ -56,7 +56,7 @@ namespace ManageEmployee.Controllers
             }
 
             //kiểm tra tên Commune trong District
-            if (_comuneService.IsCommuneExistedInDistrict(commune.CommuneName, commune.DistrictId))
+            if (_communeService.IsCommuneExistedInDistrict(commune.CommuneName, commune.DistrictId))
             {
                 var district = listDistrict.FirstOrDefault(d => d.DistrictId == commune.DistrictId);
                 string districtName = district != null ? district.DistrictName : "Unknown  district";
@@ -64,7 +64,7 @@ namespace ManageEmployee.Controllers
                 return View();
             }
 
-            _comuneService.AddCommune(commune);
+            _communeService.AddCommune(commune);
             TempData["Success"] = "Create commune successfully";
             return RedirectToAction("Index");
         }
@@ -75,7 +75,7 @@ namespace ManageEmployee.Controllers
             {
                 return NotFound();
             }
-            var commune = _comuneService.GetCommuneById(id.Value);
+            var commune = _communeService.GetCommuneById(id.Value);
             if (commune == null)
             {
                 return NotFound();
@@ -104,7 +104,7 @@ namespace ManageEmployee.Controllers
             }).ToList();
             ViewBag.Communes = selectedList;
 
-            if (_comuneService.IsCommuneExistedInDistrict(commune.CommuneName, commune.DistrictId))
+            if (_communeService.IsCommuneExistedInDistrict(commune.CommuneName, commune.DistrictId))
             {
                 var district = selectedList.FirstOrDefault(c => c.Value == commune.CommuneId.ToString());
                 string districtName = district != null ? district.Text.ToString() : "Unknown  district";
@@ -112,9 +112,24 @@ namespace ManageEmployee.Controllers
                 return View();
             }
 
-            _comuneService.UpdateCommune(commune);
+            _communeService.UpdateCommune(commune);
             TempData["Success"] = "Update commune successfull";
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int communeId)
+        {
+            var commune = _communeService.GetCommuneById(communeId);
+            if (commune == null)
+            {
+                TempData["Error"] = "District not found";
+                return NotFound();
+            }
+           
+            _communeService.RemoveCommune(commune);
+            TempData["Success"] = "Delete commune successfully";
+            return Ok();
         }
     }
 }
