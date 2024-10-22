@@ -12,8 +12,23 @@ namespace ManageEmployee.Models
         [Column(TypeName = "nvarchar")]
         [Required]
         public string FullName { get; set; }
-        public DateTime DOB {  get; set; }
-        public int Age { get; set; }
+        [Required]
+        public DateTime DOB { get; set; }
+        [Range(18, 50, ErrorMessage = "Employee age must be between 18 and 50.")]
+        public int Age
+        {
+            get
+            {
+                var today = DateTime.Today;
+                var age = today.Year - DOB.Year;
+                if (DOB.Date > today.AddYears(-age)) age--;  
+                return age;
+            }
+            set
+            {
+                
+            }
+        }
         public string Ethnicity { get; set; }
         public string Job {  get; set; }
         [Required]
