@@ -96,6 +96,7 @@ namespace ManageEmployee.Controllers
         [AutoValidateAntiforgeryToken]
         public IActionResult Edit(Commune commune)
         {
+            //gửi lại danh sách chọn District, nếu update lỗi
             var listDistrict = _districtService.GetDistricts().Result;
             var selectedList = listDistrict.Select(d => new SelectListItem
             {
@@ -104,7 +105,10 @@ namespace ManageEmployee.Controllers
             }).ToList();
             ViewBag.Communes = selectedList;
 
-            if (_communeService.IsCommuneExistedInDistrict(commune.CommuneName, commune.DistrictId))
+            var selectedCommune = _communeService.GetCommuneById(commune.CommuneId);
+            //bỏ qua tên kiểm tra trùng lặp nếu sử dung lại tên Commune cũ
+            if (!commune.CommuneName.Equals(selectedCommune.CommuneName, StringComparison.OrdinalIgnoreCase)
+                && _communeService.IsCommuneExistedInDistrict(commune.CommuneName, commune.DistrictId))
             {
                 var district = selectedList.FirstOrDefault(c => c.Value == commune.CommuneId.ToString());
                 string districtName = district != null ? district.Text.ToString() : "Unknown  district";
