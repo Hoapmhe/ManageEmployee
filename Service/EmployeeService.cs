@@ -49,5 +49,20 @@ namespace ManageEmployee.Service
             _context.Employees.Remove(employee);
             _context.SaveChanges();
         }
+
+        public IEnumerable<Province> GetProvinces()
+        {
+            return _context.Provinces.ToList();
+        }
+
+        public IEnumerable<District> GetDistricts(int provinceId)
+        {
+            return _context.Districts.Where(d => d.ProvinceId == provinceId).ToList();
+        }
+
+        public IEnumerable<Commune> GetCommunes(int districtId)
+        {
+            return _context.Communes.Where(c => c.DistrictId == districtId).ToList();
+        }
     }
 }

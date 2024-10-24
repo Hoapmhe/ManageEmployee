@@ -1,6 +1,7 @@
 ﻿using ManageEmployee.Models;
 using ManageEmployee.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ManageEmployee.Controllers
 {
@@ -21,6 +22,8 @@ namespace ManageEmployee.Controllers
 
         public IActionResult Create()
         {
+            var provinces = _employeeService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinces, "ProvinceId", "ProvinceName");
             return View();
         }
 
@@ -38,6 +41,9 @@ namespace ManageEmployee.Controllers
                 TempData["Success"] = "Create employee successfully";
                 return RedirectToAction("Index");
             }
+            //lấy lại danh sách Province trong trường hợp lỗi
+            var provinces = _employeeService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinces, "ProvinceId", "ProvinceName");
             return View();
         }
 
@@ -89,6 +95,20 @@ namespace ManageEmployee.Controllers
                 TempData["Success"] = "Delete employee successfully";
                 return Ok();
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetDistrictsByProvince(int provinceId)
+        {
+            var districts = _employeeService.GetDistricts(provinceId);
+            return Ok(districts); 
+        }
+
+        [HttpGet]
+        public IActionResult GetCommunesByDistrict(int districtId)
+        {
+            var communes = _employeeService.GetCommunes(districtId);
+            return Ok(communes);
         }
     }
 }
