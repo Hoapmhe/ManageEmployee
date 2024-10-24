@@ -2,6 +2,7 @@
 using ManageEmployee.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ManageEmployee.Controllers
 {
@@ -18,6 +19,20 @@ namespace ManageEmployee.Controllers
         {
             var listEmployee = _employeeService.GetEmployees();
             return View(listEmployee);
+        }
+
+        [HttpGet]
+        public IActionResult Search(string searchText)
+        {
+            //khi searchText trống thì trả về đầy đủ Employee
+            if (searchText.IsNullOrEmpty())
+            {
+                var listEmployee = _employeeService.GetEmployees();
+                return View("Index", listEmployee);
+            }
+            ViewBag.SearchText = searchText;
+            var searchEmployee = _employeeService.SearchEmployees(searchText);
+            return View("Index", searchEmployee);
         }
 
         public IActionResult Create()
