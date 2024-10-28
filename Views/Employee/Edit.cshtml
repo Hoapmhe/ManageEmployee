@@ -5,26 +5,21 @@
         <div class="row pb-2 mb-3">
             <h2>Edit Employee: @ViewBag.EmployeeName</h2>
         </div>
-        <div asp-validation-summary="All"></div>
+        <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="row mb-3">
-            <div class="col-md-3">
-                <label asp-for="FullName">Full Name</label>
+            <div class="col-md-4">
+                <label asp-for="FullName">1. Full Name</label>
                 <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
-            <div class="col-md-3">
-                <label asp-for="DOB">Date of Birth</label>
+            <div class="col-md-4">
+                <label asp-for="DOB">2. Date of Birth</label>
                 <input type="date" asp-for="DOB" class="form-control" />
                 <span asp-validation-for="DOB" class="text-danger"></span>
             </div>
-            <div class="col-md-3">
-                <label asp-for="Age">Age</label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="Ethnicity">Ethnicity</label>
+            <div class="col-md-4">
+                <label asp-for="Ethnicity">3. Ethnicity</label>
                 <input asp-for="Ethnicity" class="form-control" />
                 <span asp-validation-for="Ethnicity" class="text-danger"></span>
             </div>
@@ -32,19 +27,46 @@
 
         <div class="row mb-3">
             <div class="col-md-4">
-                <label asp-for="Job">Job</label>
+                <label asp-for="Job">4. Job</label>
                 <input asp-for="Job" class="form-control" />
                 <span asp-validation-for="Job" class="text-danger"></span>
             </div>
             <div class="col-md-4">
-                <label asp-for="CitizenId">Citizen Id</label>
+                <label asp-for="CitizenId">5. Citizen Id</label>
                 <input asp-for="CitizenId" class="form-control" />
                 <span asp-validation-for="CitizenId" class="text-danger"></span>
             </div>
             <div class="col-md-4">
-                <label asp-for="PhoneNumber">Phone Number</label>
+                <label asp-for="PhoneNumber">6. Phone Number</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <p>7. Address</p>
+            <div class="col-md-3">
+                <label asp-for="Province">Province</label>
+                <select asp-for="ProvinceId" asp-items="@ViewBag.Provinces" class="form-control p-2">
+                    <option>--Select Province--</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="District">District</label>
+                <select asp-for="DistrictId" asp-items="ViewBag.Districts" id="DistrictSelect" class="form-control p-2">
+                    <option value="">--Select District--</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Commune">Commune</label>
+                <select asp-for="CommuneId" asp-items="ViewBag.Communes" id="CommuneSelect" class="form-control p-2">
+                    <option value="">--Select Commune--</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="AddressDetails">Details</label>
+                <input asp-for="AddressDetails" class="form-control" />
+                <span asp-validation-for="AddressDetails" class="text-danger"></span>
             </div>
         </div>
 
@@ -57,4 +79,42 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#ProvinceId').change(function () {
+                var provinceId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetDistrictsByProvince", "Employee")', // Cập nhật tên controller
+                    type: 'GET',
+                    data: { provinceId: provinceId },
+                    success: function (data) {
+                        $('#DistrictSelect').empty(); // Xóa các tùy chọn cũ
+                        $('#DistrictSelect').append('<option value="">--Select District--</option>'); // Tùy chọn mặc định
+                        $.each(data, function (index, district) {
+                            $('#DistrictSelect').append('<option value="' + district.districtId + '">' + district.districtName + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#DistrictSelect').change(function () {
+                var districtId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetCommunesByDistrict", "Employee")',
+                    type: 'GET',
+                    data: { districtId: districtId },
+                    success: function (data) {
+                        $('#CommuneSelect').empty();
+                        $('#CommuneSelect').append('<option value="">--Select Commune--</option>');
+                        $.each(data, function (index, commune) {
+                            console.log(commune);
+                            $('#CommuneSelect').append('<option value="' + commune.communeId + '">' + commune.communeName + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 }

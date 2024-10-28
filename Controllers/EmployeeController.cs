@@ -68,11 +68,25 @@ namespace ManageEmployee.Controllers
             {
                 return NotFound();
             }
+
             var employee = _employeeService.GetEmployeeById(id.Value);
             if (employee == null)
             {
                 return NotFound();
             }
+
+            // lấy danh sách Province
+            var provinces = _employeeService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinces, "ProvinceId", "ProvinceName");
+
+            // lấy danh sách District thông qua ProvinceId
+            var districts = _employeeService.GetDistrictsByProvinceId(employee.ProvinceId);
+            ViewBag.Districts = new SelectList(districts, "DistrictId", "DistrictName");
+
+            //lấy danh sách Commune thông qua DistrictId
+            var communes = _employeeService.GetCommunesByDistrictId(employee.DistrictId);
+            ViewBag.Communes = new SelectList(communes, "CommuneId", "CommuneName");
+
             ViewBag.EmployeeName = employee.FullName;
             return View(employee);
         }
@@ -92,6 +106,18 @@ namespace ManageEmployee.Controllers
                 TempData["Success"] = "Update employee successfully";
                 return RedirectToAction("Index");
             }
+
+            // lấy danh sách Province
+            var provinces = _employeeService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinces, "ProvinceId", "ProvinceName");
+
+            // lấy danh sách District thông qua ProvinceId
+            var districts = _employeeService.GetDistrictsByProvinceId(obj.ProvinceId);
+            ViewBag.Districts = new SelectList(districts, "DistrictId", "DistrictName");
+
+            //lấy danh sách Commune thông qua DistrictId
+            var communes = _employeeService.GetCommunesByDistrictId(obj.DistrictId);
+            ViewBag.Communes = new SelectList(communes, "CommuneId", "CommuneName");
             return View();
         }
 

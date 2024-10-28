@@ -1,6 +1,7 @@
 ﻿using ManageEmployee.Data;
 using ManageEmployee.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,6 +69,16 @@ namespace ManageEmployee.Service
         public IEnumerable<Employee> SearchEmployees(string employeeName)
         {
             return _context.Employees.Where(e => e.FullName.Contains(employeeName)).ToList();
+        }
+
+        public IEnumerable<District> GetDistrictsByProvinceId(int? provinceId)
+        {
+            return _context.Districts.Where(d => d.ProvinceId == provinceId).ToList();
+        }
+
+        public IEnumerable<Commune> GetCommunesByDistrictId(int? districtId)
+        {
+            return _context.Communes.Where(c => c.DistrictId == districtId).ToList();
         }
     }
 }
