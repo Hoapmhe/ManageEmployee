@@ -31,7 +31,9 @@ namespace ManageEmployee.Models
         }
         public string Ethnicity { get; set; }
         public string Job {  get; set; }
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "CitizenId must consist of exactly 12 digits.")]
         public string CitizenId { get; set; }
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "PhoneNumber must consist of exactly 10 digits.")]
         public string PhoneNumber { get; set; }
 
         public int? ProvinceId { get; set; }
