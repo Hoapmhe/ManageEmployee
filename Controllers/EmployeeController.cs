@@ -139,14 +139,14 @@ namespace ManageEmployee.Controllers
         [HttpGet]
         public IActionResult GetDistrictsByProvince(int provinceId)
         {
-            var districts = _employeeService.GetDistricts(provinceId);
+            var districts = _employeeService.GetDistrictsByProvinceId(provinceId);
             return Ok(districts); 
         }
 
         [HttpGet]
         public IActionResult GetCommunesByDistrict(int districtId)
         {
-            var communes = _employeeService.GetCommunes(districtId);
+            var communes = _employeeService.GetCommunesByDistrictId(districtId);
             return Ok(communes);
         }
     }
