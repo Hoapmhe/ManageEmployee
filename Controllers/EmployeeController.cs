@@ -3,11 +3,14 @@ using ManageEmployee.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace ManageEmployee.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly int _pageSize = 10;
         private readonly EmployeeService _employeeService;
 
         public EmployeeController(EmployeeService employeeService)
@@ -15,24 +18,19 @@ namespace ManageEmployee.Controllers
             _employeeService = employeeService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchText, int? provinceId, int? districtId, int? communeId, int pageNumber = 1)
         {
-            var listEmployee = _employeeService.GetEmployees();
-            return View(listEmployee);
-        }
+            int pageSize = _pageSize; //số lượng bản ghi mỗi trang
+            var employeesQuery = _employeeService.GetEmployees().AsQueryable();
 
-        [HttpGet]
-        public IActionResult Search(string searchText)
-        {
-            //khi searchText trống thì trả về đầy đủ Employee
-            if (searchText.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(searchText))
             {
-                var listEmployee = _employeeService.GetEmployees();
-                return View("Index", listEmployee);
+                ViewBag.SearchText = searchText;
+                employeesQuery = _employeeService.SearchEmployees(searchText).AsQueryable();
             }
-            ViewBag.SearchText = searchText;
-            var searchEmployee = _employeeService.SearchEmployees(searchText);
-            return View("Index", searchEmployee);
+
+            var pagedEmployees = employeesQuery.ToPagedList(pageNumber, pageSize);
+            return View(pagedEmployees);
         }
 
         public IActionResult Create()

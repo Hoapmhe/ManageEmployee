@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Employee>
+﻿@model IPagedList<Employee>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+
 
 <div class="container p-3">
     <div>
@@ -6,7 +9,7 @@
     </div>
     <div class="row align-items-center">
         <div class="col-md-7">
-            <form asp-action="Search" method="get">
+            <form asp-action="Index" method="get">
                 <div class="input-group">
                     <input type="text" class="form-control" name="searchText" 
                                     placeholder="Search employee ..." value="@ViewBag.SearchText" />
@@ -14,6 +17,8 @@
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
+                @* Filter *@
+
             </form>
         </div>
         <div class="col-md-5 text-end">
@@ -72,6 +77,31 @@
     </div>
 
 </div>
+
+<div class="d-flex justify-content-center mt-3">
+    @Html.PagedListPager(
+            Model,
+            page => Url.Action("Index", new { pageNumber = page, searchText = ViewBag.SearchText }),
+            new PagedListRenderOptions
+    {
+        UlElementClasses = new[] { "pagination" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        ActiveLiElementClass = "active", //dùng để nhận biết trang hiện tại
+        DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //được áp dụng cho các mục không khả dụng (trang đầu, trang cuối)
+        DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //hiện thị 2 nút Trang trước và Trang sau khi cần thiết
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always, //đảm bảo nút trang trước luôn xuất hiện
+        DisplayLinkToNextPage = PagedListDisplayMode.Always, //đảm bảo nút trang sau luôn xuất hiện
+        DisplayLinkToIndividualPages = true, //Giá trị true cho phép hiển thị từng trang cụ thể
+                                             //chọn bất kỳ trang nào để chuyển trực tiếp đến trang đó.
+        DisplayEllipsesWhenNotShowingAllPageNumbers = true, //Giá trị true sẽ hiển thị dấu ba chấm (...)
+                                                           //khi không phải tất cả các trang đều được hiển thị.
+        LinkToPreviousPageFormat = "Previous",
+        LinkToNextPageFormat = "Next"
+    })
+</div>
+
+
 
 @section scripts{
     <script src="~/js/employeecontroller.js"></script>
