@@ -8,24 +8,37 @@
         <h2>Employee List</h2>
     </div>
     <div class="row align-items-center">
-        <div class="col-md-7">
-            <form asp-action="Index" method="get">
+        <form asp-action="Index" method="get" class="d-flex justify-content-between w-100">
+            <div class="col-md-3">
                 <div class="input-group">
-                    <input type="text" class="form-control" name="searchText" 
-                                    placeholder="Search employee ..." value="@ViewBag.SearchText" />
+                    <input type="text" class="form-control" name="searchText"
+                           placeholder="Search employee ..." value="@ViewBag.SearchText" />
                     <button type="submit" class="btn btn-outline-secondary">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
-                @* Filter *@
-
-            </form>
-        </div>
-        <div class="col-md-5 text-end">
-            <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-square"></i> Create new employee
-            </a>
-        </div>
+            </div>
+            @* Filter *@
+            <div class="col-md-6 mx-3">
+                <div class="input-group">
+                    <select name="provinceId" class="form-select" asp-items="@ViewBag.Provinces">
+                        <option value="">Select Province</option>
+                    </select>
+                    <select name="districtId" class="form-select" asp-items="@ViewBag.Districts">
+                        <option value="">Select District</option>
+                    </select>
+                    <select name="communeId" class="form-select" asp-items="@ViewBag.Communes">
+                        <option value="">Select Commune</option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-secondary">Filter</button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-square"></i> Create new employee
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -100,8 +113,6 @@
         LinkToNextPageFormat = "Next"
     })
 </div>
-
-
 
 @section scripts{
     <script src="~/js/employeecontroller.js"></script>

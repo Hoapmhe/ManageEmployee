@@ -23,10 +23,52 @@ namespace ManageEmployee.Controllers
             int pageSize = _pageSize; //số lượng bản ghi mỗi trang
             var employeesQuery = _employeeService.GetEmployees().AsQueryable();
 
+            //lấy danh sách Province
+            ViewBag.Provinces = _employeeService.GetProvinces().Select(p => new SelectListItem
+            {
+                Value = p.ProvinceId.ToString(),
+                Text = p.ProvinceName.Trim(),
+                Selected = provinceId.HasValue && provinceId.Value == p.ProvinceId
+            });
+            //lấy danh sách District
+            ViewBag.Districts = _employeeService.GetDistricts().Select(d => new SelectListItem
+            {
+                Value= d.DistrictId.ToString(),
+                Text = d.DistrictName.Trim(),
+                Selected = districtId.HasValue && districtId.Value == d.DistrictId
+            });
+            //lấy danh sách Commune
+            ViewBag.Communes = _employeeService.GetCommunesBy().Select(c => new SelectListItem
+            {
+                Value = c.CommuneId.ToString(),
+                Text = c.CommuneName.Trim(),
+                Selected = communeId.HasValue && communeId.Value == c.CommuneId
+            });
+
+            //lưu lại các giá trị đã chọn
+            ViewBag.SelectedProvinceId = provinceId;
+            ViewBag.SelectedDistrictId = districtId;
+            ViewBag.SelectedCommuneId = communeId;
+
+            //search
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
                 employeesQuery = _employeeService.SearchEmployees(searchText).AsQueryable();
+            }
+
+            //filter
+            if (provinceId.HasValue)
+            {
+                employeesQuery = employeesQuery.Where(e => e.ProvinceId == provinceId.Value);
+            }
+            if (districtId.HasValue)
+            {
+                employeesQuery = employeesQuery.Where(e => e.DistrictId == districtId.Value);
+            }
+            if (communeId.HasValue)
+            {
+                employeesQuery = employeesQuery.Where(e => e.CommuneId == communeId.Value);
             }
 
             var pagedEmployees = employeesQuery.ToPagedList(pageNumber, pageSize);

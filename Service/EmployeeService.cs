@@ -56,6 +56,16 @@ namespace ManageEmployee.Service
             return _context.Provinces.ToList();
         }
 
+        public IEnumerable<District> GetDistricts()
+        {
+            return _context.Districts.ToList();
+        }
+
+        public IEnumerable<Commune> GetCommunesBy()
+        {
+            return _context.Communes.ToList();
+        }
+
         public IEnumerable<Employee> SearchEmployees(string employeeName)
         {
             return _context.Employees.Where(e => e.FullName.Contains(employeeName)).ToList();
@@ -70,5 +80,7 @@ namespace ManageEmployee.Service
         {
             return _context.Communes.Where(c => c.DistrictId == districtId).ToList();
         }
+
+        
     }
 }
