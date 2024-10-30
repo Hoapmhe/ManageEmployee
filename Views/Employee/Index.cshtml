@@ -49,7 +49,7 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Employee ID</th>
+                    <th>ID</th>
                     <th>Full Name</th>
                     <th>Date of Birth</th>
                     <th>Age</th>
@@ -57,6 +57,8 @@
                     <th>Job</th>
                     <th>Citizen ID</th>
                     <th>Phone Number</th>
+                    <th>Diploma</th>
+                    <th>Details</th>
                     <th class="w-20">Edit</th>
                     <th class="w-20">Delete</th>
                 </tr>
@@ -73,6 +75,12 @@
                         <td>@item.Job</td>
                         <td>@item.CitizenId</td>
                         <td>@item.PhoneNumber</td>
+                        <td>@item.TotalDiplomas</td>
+                        <td>
+                            <a asp-controller="Employee" asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
+                                <i class="bi bi-info-circle"></i>
+                            </a>
+                        </td>
                         <td>
                             <a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
                                 <i class="bi bi-pencil"></i>

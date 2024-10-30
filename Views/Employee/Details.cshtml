@@ -1,0 +1,91 @@
+﻿@model Employee
+<div class="container mt-5">
+    <h2>Employee Details</h2>
+    <hr>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">@Model.FullName</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Age: @Model.Age</h6>
+
+            <dl class="row">
+                <dt class="col-sm-3">Full Name</dt>
+                <dd class="col-sm-9">@Model.FullName</dd>
+
+                <dt class="col-sm-3">Date of Birth</dt>
+                <dd class="col-sm-9">@Model.DOB.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Ethnicity</dt>
+                <dd class="col-sm-9">@Model.Ethnicity</dd>
+
+                <dt class="col-sm-3">Job</dt>
+                <dd class="col-sm-9">@Model.Job</dd>
+
+                <dt class="col-sm-3">Citizen ID</dt>
+                <dd class="col-sm-9">@Model.CitizenId</dd>
+
+                <dt class="col-sm-3">Phone Number</dt>
+                <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+                <dt class="col-sm-3">Address</dt>
+                <dd class="col-sm-9">
+                    @(Model.Province?.ProvinceName ?? "N/A"),
+                    @(Model.District?.DistrictName ?? "N/A"),
+                    @(Model.Commune?.CommuneName ?? "N/A")
+                    @(string.IsNullOrWhiteSpace(Model.AddressDetails) ? "" : $", {Model.AddressDetails}")
+                </dd>
+
+                <dt class="col-sm-3">Total Diplomas</dt>
+                <dd class="col-sm-9">@Model.TotalDiplomas</dd>
+
+                <dt class="col-sm-3">Valid Diplomas</dt>
+                <dd class="col-sm-9">@Model.ValidDiplomasCount</dd>
+            </dl>
+
+            <!-- Diploma List -->
+            <h5 class="mt-4">Diplomas</h5>
+            @if (Model.Diplomas != null && Model.Diplomas.Any())
+            {
+                <table class="table table-bordered table-hover mt-2">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Issued Date</th>
+                            <th>Issued By (Province)</th>
+                            <th>Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var diploma in Model.Diplomas)
+                        {
+                            <tr>
+                                <td>@diploma.Name</td>
+                                <td>@diploma.IssuedDate.ToString("dd/MM/yyyy")</td>
+                                <td>@diploma.IssuedByProvince</td>
+                                <td>
+                                    @if (diploma.ExpiryDate.HasValue)
+                                    {
+                                        @diploma.ExpiryDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span>Valid Indefinitely</span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No diplomas available.</p>
+            }
+
+            <div class="mt-4">
+                <a href="@Url.Action("Index", "Employee")" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,7 +25,12 @@ namespace ManageEmployee.Service
         //should resolve the issue of tracking multiple instances of the same entity with the same key value.
         public Employee GetEmployeeById(int id)
         {
-            return _context.Employees.AsNoTracking().FirstOrDefault(e => e.Id == id);
+            return _context.Employees
+                .Include(e => e.Commune)  
+                .Include(e => e.District) 
+                .Include(e => e.Province)
+                .AsNoTracking()
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public void AddEmployee(Employee employee)

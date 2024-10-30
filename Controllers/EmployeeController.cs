@@ -191,5 +191,22 @@ namespace ManageEmployee.Controllers
             var communes = _employeeService.GetCommunesByDistrictId(districtId);
             return Ok(communes);
         }
+
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var employee = _employeeService.GetEmployeeById(id.Value);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            return View(employee);
+        }
     }
 }
