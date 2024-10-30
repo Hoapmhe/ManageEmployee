@@ -14,6 +14,7 @@ builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<ProvinceService>();
 builder.Services.AddScoped<DistrictService>();
 builder.Services.AddScoped<CommuneService>();
+builder.Services.AddScoped<DiplomaService>();
 
 var app = builder.Build();
 
