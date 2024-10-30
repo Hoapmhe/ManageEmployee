@@ -45,6 +45,38 @@ namespace ManageEmployee.Migrations
                     b.ToTable("Commune");
                 });
 
+            modelBuilder.Entity("ManageEmployee.Models.Diploma", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IssuedByProvince")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("IssuedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Diploma");
+                });
+
             modelBuilder.Entity("ManageEmployee.Models.District", b =>
                 {
                     b.Property<int>("DistrictId")
@@ -155,6 +187,17 @@ namespace ManageEmployee.Migrations
                     b.Navigation("District");
                 });
 
+            modelBuilder.Entity("ManageEmployee.Models.Diploma", b =>
+                {
+                    b.HasOne("ManageEmployee.Models.Employee", "Employee")
+                        .WithMany("Diplomas")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("ManageEmployee.Models.District", b =>
                 {
                     b.HasOne("ManageEmployee.Models.Province", "Province")
@@ -190,6 +233,11 @@ namespace ManageEmployee.Migrations
             modelBuilder.Entity("ManageEmployee.Models.District", b =>
                 {
                     b.Navigation("Communes");
+                });
+
+            modelBuilder.Entity("ManageEmployee.Models.Employee", b =>
+                {
+                    b.Navigation("Diplomas");
                 });
 
             modelBuilder.Entity("ManageEmployee.Models.Province", b =>
