@@ -46,5 +46,17 @@ namespace ManageEmployee.Models
         public Commune? Commune { get; set; }
 
         public string? AddressDetails { get; set; } //địa chỉ cụ thể
+        // Collection of Diplomas
+        public ICollection<Diploma>? Diplomas { get; set; }
+
+        // Calculated property for total diplomas
+        public int TotalDiplomas => Diplomas?.Count ?? 0;
+
+        // Method to get count of valid (non-expired) diplomas
+        public int ValidDiplomasCount => Diplomas?.Count(d => d.ExpiryDate == null || d.ExpiryDate > DateTime.Now) ?? 0;
+        public bool CanAddDiploma()
+        {
+            return ValidDiplomasCount < 3;
+        }
     }
 }
