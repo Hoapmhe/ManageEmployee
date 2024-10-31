@@ -11,7 +11,9 @@ namespace ManageEmployee.Models
         public string Name { get; set; }
         [Required]
         public DateTime IssuedDate { get; set; }
-        public string IssuedByProvince { get; set; }
+        [Required]
+        public int IssuedByProvinceId { get; set; }
+        public Province IssuedByProvince { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
