@@ -42,8 +42,17 @@
                 <dd class="col-sm-9">@Model.ValidDiplomasCount</dd>
             </dl>
 
+            <div class="row align-items-center mt-4">
+                <div class="col-sm-3">
+                    <h5>Diplomas</h5>
+                </div>
+                <div class="col-sm-9">
+                    <a asp-controller="Diploma" asp-action="Create" asp-route-employeeId="@Model.Id"
+                        class="btn btn-primary">Add Diploma</a>
+                </div>
+            </div>
+
             <!-- Diploma List -->
-            <h5 class="mt-4">Diplomas</h5>
             @if (Model.Diplomas != null && Model.Diplomas.Any())
             {
                 <table class="table table-bordered table-hover mt-2">
