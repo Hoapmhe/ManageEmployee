@@ -18,7 +18,7 @@ namespace ManageEmployee.Service
 
         public List<Employee> GetEmployees()
         {
-            return _context.Employees.ToList();
+            return _context.Employees.Include(e => e.Diplomas).ToList();
         }
 
         //Using AsNoTracking() for retrievals or detaching the existing tracked entity
