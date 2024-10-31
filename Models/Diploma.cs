@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ManageEmployee.ValidateCustom;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManageEmployee.Models
@@ -11,15 +12,16 @@ namespace ManageEmployee.Models
         [Required]
         public string Name { get; set; }
         [Required]
+        [DateNotInFuture]
         public DateTime IssuedDate { get; set; }
         [Required]
         public int IssuedByProvinceId { get; set; }
         [ForeignKey(nameof(IssuedByProvinceId))]
-        public Province IssuedByProvince { get; set; }
+        public Province? IssuedByProvince { get; set; }
         public DateTime? ExpiryDate { get; set; }
         [Required]
         public int EmployeeId { get; set; }
         [ForeignKey(nameof(EmployeeId))]
-        public Employee Employee { get; set; }
+        public Employee? Employee { get; set; }
     }
 }
