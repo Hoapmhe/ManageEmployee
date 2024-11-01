@@ -70,7 +70,7 @@
                             <tr>
                                 <td>@diploma.Name</td>
                                 <td>@diploma.IssuedDate.ToString("dd/MM/yyyy")</td>
-                                <td>@diploma.IssuedByProvince</td>
+                                <td>@diploma.IssuedByProvince?.ProvinceName</td>
                                 <td>
                                     @if (diploma.ExpiryDate.HasValue)
                                     {

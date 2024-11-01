@@ -26,9 +26,10 @@ namespace ManageEmployee.Service
         public Employee GetEmployeeById(int id)
         {
             return _context.Employees
-                .Include(e => e.Commune)  
-                .Include(e => e.District) 
+                .Include(e => e.Commune)
+                .Include(e => e.District)
                 .Include(e => e.Province)
+                .Include(e => e.Diplomas).ThenInclude(d => d.IssuedByProvince)
                 .AsNoTracking()
                 .FirstOrDefault(e => e.Id == id);
         }
