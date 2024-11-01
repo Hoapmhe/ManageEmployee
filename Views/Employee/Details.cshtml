@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-sm-9">
                     <a asp-controller="Diploma" asp-action="Create" asp-route-employeeId="@Model.Id"
-                        class="btn btn-primary">Add Diploma</a>
+                       class="btn btn-primary"><i class="bi bi-folder-plus"></i> Add Diploma</a>
                 </div>
             </div>
 
@@ -67,7 +67,9 @@
                     <tbody>
                         @foreach (var diploma in Model.Diplomas)
                         {
-                            <tr>
+                            var isExpired = diploma.ExpiryDate.HasValue && diploma.ExpiryDate.Value < DateTime.Now;
+
+                            <tr class="@(isExpired ? "table-danger" : "")">
                                 <td>@diploma.Name</td>
                                 <td>@diploma.IssuedDate.ToString("dd/MM/yyyy")</td>
                                 <td>@diploma.IssuedByProvince?.ProvinceName</td>
@@ -81,7 +83,6 @@
                                         <span>Valid Indefinitely</span>
                                     }
                                 </td>
-
                             </tr>
                         }
                     </tbody>
