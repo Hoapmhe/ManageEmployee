@@ -72,5 +72,53 @@ namespace ManageEmployee.Controllers
             }
             return View(diploma);
         }
+
+        public IActionResult Edit(int? diplomaId, int employeeId)
+        {
+            if (diplomaId == null || diplomaId == 0)
+            {
+                return NotFound();
+            }
+            var diploma = _diplomaService.GetDiplomaById(diplomaId.Value);
+            if (diploma == null)
+            {
+                return NotFound();
+            }
+
+            var provinces = _employeeService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinces, "ProvinceId", "ProvinceName");
+            ViewBag.EmployeeId = employeeId;
+            return View(diploma);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Diploma diploma)
+        {
+            var provinces = _employeeService.GetProvinces();
+            ViewBag.Provinces = new SelectList(provinces, "ProvinceId", "ProvinceName");
+            ViewBag.EmployeeId = diploma.EmployeeId;
+
+            var province = _employeeService.GetProvinces().FirstOrDefault(p => p.ProvinceId == diploma.IssuedByProvinceId);
+            var employee = _employeeService.GetEmployeeById(diploma.EmployeeId);
+            var diplomaName = _diplomaService.GetDiplomaById(diploma.Id).Name;
+            //kiểm tra trùng lặp Diploma
+            if (!diploma.Name.Equals(diplomaName) &&
+                _diplomaService.IsDiplomaInProvince(diploma.Name,
+                        diploma.IssuedByProvinceId, diploma.EmployeeId))
+            {
+                TempData["Warning"] = $"This Diploma was issued by the {province.ProvinceName} to {employee.FullName}";
+                return View(diploma);
+            }
+
+            if (ModelState.IsValid)
+            {
+                _diplomaService.UpdateDiploma(diploma);
+                TempData["Success"] = "Update diploma successfully";
+                return RedirectToAction("Details", "Employee", new { id = diploma.EmployeeId });
+            }
+
+            return View(diploma);
+        }
     }
 }

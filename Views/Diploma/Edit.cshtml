@@ -1,0 +1,48 @@
+﻿@model Diploma
+
+<form method="post" asp-action="Edit">
+    <input type="hidden" asp-for="EmployeeId" value="@ViewBag.EmployeeId" />
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    <div class="border p-3 mt-4">
+        <div class="row pb-2 mb-3">
+            <h2>Update Diploma</h2>
+        </div>
+
+        <div asp-validation-summary=All class="text-danger"></div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label asp-for="Name">1. Diploma Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter name diploma"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="IssuedByProvinceId">2. Issued by</label>
+                <select asp-for="IssuedByProvinceId" asp-items="@ViewBag.Provinces" class="form-control p-2">
+                    <option value="">--Select Province--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label asp-for="IssuedDate">3. Issued Date</label>
+                <input type="date" asp-for="IssuedDate" class="form-control" />
+                <span asp-validation-for="IssuedDate" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ExpiryDate">4. Expiry Date(No date entered if indefinite)</label>
+                <input type="date" asp-for="ExpiryDate" class="form-control" />
+                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-controller="Employee" asp-action="Details" asp-route-id="@ViewBag.EmployeeId" class="btn btn-secondary">Back</a>
+    </div>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
