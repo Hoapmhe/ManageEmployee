@@ -37,5 +37,11 @@ namespace ManageEmployee.Service
             _context.Diplomas.Update(diploma);
             _context.SaveChanges();
         }
+
+        public void DeleteDiploma(Diploma diploma)
+        {
+            _context.Diplomas.Remove(diploma);
+            _context.SaveChanges();
+        }
     }
 }

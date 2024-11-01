@@ -120,5 +120,21 @@ namespace ManageEmployee.Controllers
 
             return View(diploma);
         }
+
+        [HttpPost]
+        public IActionResult Delete(int Id)
+        {
+            var diploma = _diplomaService.GetDiplomaById(Id);
+            if (diploma == null)
+            {
+                TempData["Error"] = "Diploma not found";
+                return NotFound();
+            }
+
+            _diplomaService.DeleteDiploma(diploma);
+            TempData["Success"] = "Delete diploma successfully";
+            return Ok();
+
+        }
     }
 }
