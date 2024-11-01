@@ -12,12 +12,13 @@ namespace ManageEmployee.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        [DateNotInFuture]
+        [ValidateDate]
         public DateTime IssuedDate { get; set; }
         [Required]
         public int IssuedByProvinceId { get; set; }
         [ForeignKey(nameof(IssuedByProvinceId))]
         public Province? IssuedByProvince { get; set; }
+        [ExpiryDateAfterIssuedDate]
         public DateTime? ExpiryDate { get; set; }
         [Required]
         public int EmployeeId { get; set; }
