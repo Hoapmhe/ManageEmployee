@@ -2,7 +2,10 @@
 using ManageEmployee.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
+using System.Text;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -207,6 +210,108 @@ namespace ManageEmployee.Controllers
             }
 
             return View(employee);
+        }
+
+        [HttpPost]
+        public IActionResult ExportSelectedEmployees([FromBody] List<int> employeeIds)
+        {
+            if (employeeIds == null || !employeeIds.Any())
+            {
+                return BadRequest("No Employee IDs provided.");
+            }
+
+            var employees = _employeeService.GetEmployees()
+            .Where(e => employeeIds.Contains(e.Id))
+            .Select(e => new
+            {
+                e.Id,
+                e.FullName,
+                e.DOB,
+                e.Ethnicity,
+                e.Job,
+                e.CitizenId,
+                e.PhoneNumber,
+                Province = e.Province?.ProvinceName ?? "N/A",
+                District = e.District?.DistrictName ?? "N/A",
+                Commune = e.Commune?.CommuneName ?? "N/A",
+                AddressDetail = e.AddressDetails ?? "N/A",
+                TotalDiploma = e.Diplomas?.Count()??0,
+                Diplomas = e.Diplomas.Select(d => new
+                {
+                    d.Name,
+                    d.IssuedDate,
+                    d.ExpiryDate,
+                    IssuedByProvince = d.IssuedByProvince.ProvinceName
+                })
+            }).ToList(); 
+
+            if (!employees.Any())
+            {
+                return NotFound("No employees found with the provided IDs.");
+            }
+
+            // Set up Excel file generation using EPPlus
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Employees");
+
+                // Add headers
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Full Name";
+                worksheet.Cells[1, 3].Value = "Date of Birth";
+                worksheet.Cells[1, 4].Value = "Ethnicity";
+                worksheet.Cells[1, 5].Value = "Job";
+                worksheet.Cells[1, 6].Value = "Citizen ID";
+                worksheet.Cells[1, 7].Value = "Phone Number";
+                worksheet.Cells[1, 8].Value = "Province";
+                worksheet.Cells[1, 9].Value = "District";
+                worksheet.Cells[1, 10].Value = "Commune";
+                worksheet.Cells[1, 11].Value = "Address Details";
+                worksheet.Cells[1, 12].Value = "Diplomas";
+                worksheet.Cells[1, 13].Value = "Issued Date";
+                worksheet.Cells[1, 14].Value = "Expiry Date";
+                worksheet.Cells[1, 15].Value = "Issued By Province";
+
+                // dòng thứ row
+                int row = 2;
+                foreach (var emp in employees)
+                {
+                    worksheet.Cells[row, 1].Value = emp.Id;
+                    worksheet.Cells[row, 2].Value = emp.FullName;
+                    worksheet.Cells[row, 3].Value = emp.DOB.ToString("dd-MM-yyyy");
+                    worksheet.Cells[row, 4].Value = emp.Ethnicity;
+                    worksheet.Cells[row, 5].Value = emp.Job;
+                    worksheet.Cells[row, 6].Value = emp.CitizenId;
+                    worksheet.Cells[row, 7].Value = emp.PhoneNumber;
+                    worksheet.Cells[row, 8].Value = emp.Province;
+                    worksheet.Cells[row, 9].Value = emp.District;
+                    worksheet.Cells[row, 10].Value = emp.Commune;
+                    worksheet.Cells[row, 11].Value = emp.AddressDetail;
+
+                    //diploma
+                    int totalDiplomas = emp.TotalDiploma;
+                    var diplomasList = emp.Diplomas.ToList(); 
+
+                    for (int i = 0; i < totalDiplomas; i++)
+                    {
+                        int baseColumn = 12 + i * 4;
+                        if (i < diplomasList.Count)
+                        {
+                            var diploma = diplomasList[i];
+                            worksheet.Cells[row, baseColumn].Value = diploma.Name;
+                            worksheet.Cells[row, baseColumn + 1].Value = diploma.IssuedDate.ToString("dd-MM-yyyy");
+                            worksheet.Cells[row, baseColumn + 2].Value = diploma.ExpiryDate?.ToString("dd-MM-yyyy") ?? "N/A";
+                            worksheet.Cells[row, baseColumn + 3].Value = diploma.IssuedByProvince;
+                        }
+                    }
+                    row++;
+
+                }
+
+                var excelFileContent = package.GetAsByteArray();
+                return File(excelFileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SelectedEmployees.xlsx");
+            }
         }
     }
 }

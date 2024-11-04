@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace ManageEmployee.Service
 {
@@ -18,7 +19,12 @@ namespace ManageEmployee.Service
 
         public List<Employee> GetEmployees()
         {
-            return _context.Employees.Include(e => e.Diplomas).ToList();
+            return _context.Employees
+                .Include(e => e.Commune)
+                .Include(e => e.District)
+                .Include(e => e.Province)
+                .Include(e => e.Diplomas).ThenInclude(d => d.IssuedByProvince)
+                .ToList();
         }
 
         //Using AsNoTracking() for retrievals or detaching the existing tracked entity
@@ -87,6 +93,6 @@ namespace ManageEmployee.Service
             return _context.Communes.Where(c => c.DistrictId == districtId).ToList();
         }
 
-        
+
     }
 }

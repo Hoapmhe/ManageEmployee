@@ -42,62 +42,65 @@
     </div>
 </div>
 
-
-
 <div>
-    <div>
-        <table class="table table-bordered table-striped">
-            <thead>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Date of Birth</th>
+                <th>Age</th>
+                <th>Ethnicity</th>
+                <th>Job</th>
+                <th>Citizen ID</th>
+                <th>Phone Number</th>
+                <th>Diploma</th>
+                <th>Details</th>
+                <th class="w-20">Edit</th>
+                <th class="w-20">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
                 <tr>
-                    <th>ID</th>
-                    <th>Full Name</th>
-                    <th>Date of Birth</th>
-                    <th>Age</th>
-                    <th>Ethnicity</th>
-                    <th>Job</th>
-                    <th>Citizen ID</th>
-                    <th>Phone Number</th>
-                    <th>Diploma</th>
-                    <th>Details</th>
-                    <th class="w-20">Edit</th>
-                    <th class="w-20">Delete</th>
+                    <td><input type="checkbox" class="employee-checkbox" value="@item.Id" /></td>
+                    <td>@item.Id</td>
+                    <td>@item.FullName</td>
+                    <td>@item.DOB.ToString("dd-MM-yyyy")</td>
+                    <td>@item.Age</td>
+                    <td>@item.Ethnicity</td>
+                    <td>@item.Job</td>
+                    <td>@item.CitizenId</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.TotalDiplomas</td>
+                    <td>
+                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
+                            <i class="bi bi-info-circle"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a onclick="deleteEmployee('@item.Id')" class="btn btn-danger">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.FullName</td>
-                        <td>@item.DOB.ToString("dd-MM-yyyy")</td>
-                        <td>@item.Age</td>
-                        <td>@item.Ethnicity</td>
-                        <td>@item.Job</td>
-                        <td>@item.CitizenId</td>
-                        <td>@item.PhoneNumber</td>
-                        <td>@item.TotalDiplomas</td>
-                        <td>
-                            <a asp-controller="Employee" asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
-                                <i class="bi bi-info-circle"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a onclick="deleteEmployee('@item.Id')" class="btn btn-danger">
-                                <i class="bi bi-trash3"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
+    <div class="mt-3 text-end">
+        <button type="button" onclick="exportSelectedEmployees()" class="btn btn-success">
+            Export Selected
+        </button>
     </div>
-
 </div>
+
 
 <div class="d-flex justify-content-center mt-3">
     @Html.PagedListPager(
@@ -116,12 +119,12 @@
         DisplayLinkToIndividualPages = true, //Giá trị true cho phép hiển thị từng trang cụ thể
                                              //chọn bất kỳ trang nào để chuyển trực tiếp đến trang đó.
         DisplayEllipsesWhenNotShowingAllPageNumbers = true, //Giá trị true sẽ hiển thị dấu ba chấm (...)
-                                                           //khi không phải tất cả các trang đều được hiển thị.
+                                                            //khi không phải tất cả các trang đều được hiển thị.
         LinkToPreviousPageFormat = "Previous",
         LinkToNextPageFormat = "Next"
     })
 </div>
 
-@section scripts{
+@section scripts {
     <script src="~/js/employeecontroller.js"></script>
 }
