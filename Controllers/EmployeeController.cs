@@ -2,12 +2,15 @@
 using ManageEmployee.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using System.Text;
+using System.Text.RegularExpressions;
 using X.PagedList;
 using X.PagedList.Extensions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ManageEmployee.Controllers
 {
@@ -313,5 +316,79 @@ namespace ManageEmployee.Controllers
                 return File(excelFileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SelectedEmployees.xlsx");
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportEmployeesFromExcel(IFormFile file)
+        {
+            var errors = new List<string>();
+            int countEmployee = 0;
+            int rowCount;
+            using (var steam = new MemoryStream())
+            {
+                await file.CopyToAsync(steam);
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (var package = new ExcelPackage(steam))
+                {
+                    var worksheet = package.Workbook.Worksheets.First();
+                    rowCount = worksheet.Dimension.Rows;
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var employee = new Employee
+                        {
+                            FullName = worksheet.Cells[row, 1].Value?.ToString().Trim(),
+                            DOB = DateTime.TryParse(worksheet.Cells[row, 2].Value?.ToString(), out var dob) ? dob : DateTime.MinValue,
+                            Ethnicity = worksheet.Cells[row, 3].Value?.ToString().Trim(),
+                            Job = worksheet.Cells[row, 4].Value?.ToString().Trim(),
+                            CitizenId = worksheet.Cells[row, 5].Value?.ToString().Trim(),
+                            PhoneNumber = worksheet.Cells[row, 6].Value?.ToString().Trim(),
+                        };
+                        var validationErrors = ValidateEmployeeData(employee, row);
+                        if (validationErrors.Any())
+                        {
+                            errors.AddRange(validationErrors);
+                        }
+                        else
+                        {
+                            await _employeeService.AddEmployeeAsync(employee);
+                            countEmployee++;
+                        }
+                    }
+                }
+            }
+            TempData["Success"] = $"successfully added {countEmployee}/{rowCount - 1} Employee(s)";
+            // Chuyển list errors thành string với mỗi lỗi trên một dòng mới
+            if (errors.Any())
+            {
+                TempData["Error"] = string.Join("<br/>", errors);
+            }
+            return RedirectToAction("Index");
+        }
+
+        public List<string> ValidateEmployeeData(Employee employee, int row)
+        {
+            var errors = new List<string>();
+            if (employee.DOB == DateTime.MinValue)
+            {
+                errors.Add($"Row {row}: Invalid date of birth.");
+            }
+            if (string.IsNullOrEmpty(employee.Ethnicity))
+            {
+                errors.Add($"Row {row}: Ethnicity cannot be left blank.");
+            }
+            if (string.IsNullOrEmpty(employee.Job))
+            {
+                errors.Add($"Row {row}: Job cannot be left blank.");
+            }
+            if (employee.CitizenId != null && !Regex.IsMatch(employee.CitizenId, @"^\d{12}$"))
+            {
+                errors.Add($"Row {row}: CitizenId must consist of exactly 12 digits.");
+            }
+            if (employee.PhoneNumber != null && !Regex.IsMatch(employee.PhoneNumber, @"^\d{10}$"))
+            {
+                errors.Add($"Row {row}: PhoneNumber must consist of exactly 10 digits.");
+            }
+            return errors;
+        }
+
     }
 }

@@ -39,6 +39,12 @@
                 </a>
             </div>
         </form>
+        <form asp-action="ImportEmployeesFromExcel" method="post" enctype="multipart/form-data" style="display:inline;">
+            <div class="form-group">
+                <input type="file" name="file" accept=".xlsx" required />
+                <button type="submit" class="btn btn-success">Import Employees</button>
+            </div>
+        </form>
     </div>
 </div>
 

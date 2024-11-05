@@ -93,6 +93,10 @@ namespace ManageEmployee.Service
             return _context.Communes.Where(c => c.DistrictId == districtId).ToList();
         }
 
-
+        public async Task AddEmployeeAsync(Employee employee)
+        {
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
+        }
     }
 }
