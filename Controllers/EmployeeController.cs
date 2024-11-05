@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using X.PagedList;
@@ -324,6 +325,8 @@ namespace ManageEmployee.Controllers
             var errors = new List<string>();
             int countEmployee = 0;
             int rowCount;
+            bool atLeastOneSuccess = false;
+            string[] formats = { "dd-MM-yyyy", "dd/MM/yyyy" };
             using (var steam = new MemoryStream())
             {
                 await file.CopyToAsync(steam);
@@ -334,10 +337,13 @@ namespace ManageEmployee.Controllers
                     rowCount = worksheet.Dimension.Rows;
                     for (int row = 2; row <= rowCount; row++)
                     {
+                        var dateValue = worksheet.Cells[row, 2].Value?.ToString();
+                        DateTime dob;
+
                         var employee = new Employee
                         {
                             FullName = worksheet.Cells[row, 1].Value?.ToString().Trim(),
-                            DOB = DateTime.TryParse(worksheet.Cells[row, 2].Value?.ToString(), out var dob) ? dob : DateTime.MinValue,
+                            DOB = DateTime.TryParseExact(dateValue, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dob) ? dob : DateTime.MinValue,
                             Ethnicity = worksheet.Cells[row, 3].Value?.ToString().Trim(),
                             Job = worksheet.Cells[row, 4].Value?.ToString().Trim(),
                             CitizenId = worksheet.Cells[row, 5].Value?.ToString().Trim(),
@@ -352,11 +358,15 @@ namespace ManageEmployee.Controllers
                         {
                             await _employeeService.AddEmployeeAsync(employee);
                             countEmployee++;
+                            atLeastOneSuccess = true;
                         }
                     }
                 }
             }
-            TempData["Success"] = $"successfully added {countEmployee}/{rowCount - 1} Employee(s)";
+            if (atLeastOneSuccess)
+            {
+                TempData["Success"] = $"successfully added {countEmployee}/{rowCount - 1} Employee(s)";
+            }
             // Chuyển list errors thành string với mỗi lỗi trên một dòng mới
             if (errors.Any())
             {
