@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using X.PagedList;
@@ -359,7 +360,7 @@ namespace ManageEmployee.Controllers
             // Chuyển list errors thành string với mỗi lỗi trên một dòng mới
             if (errors.Any())
             {
-                TempData["Error"] = string.Join("<br/>", errors);
+                TempData["Error"] = string.Join("\n", errors);
             }
             return RedirectToAction("Index");
         }
@@ -382,6 +383,10 @@ namespace ManageEmployee.Controllers
             if (employee.CitizenId != null && !Regex.IsMatch(employee.CitizenId, @"^\d{12}$"))
             {
                 errors.Add($"Row {row}: CitizenId must consist of exactly 12 digits.");
+            }
+            if (_employeeService.IsCitizenIdExited(employee.CitizenId))
+            {
+                errors.Add($"Row {row}: Citizen id '{employee.CitizenId}' has existed.");
             }
             if (employee.PhoneNumber != null && !Regex.IsMatch(employee.PhoneNumber, @"^\d{10}$"))
             {
